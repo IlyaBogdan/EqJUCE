@@ -2,11 +2,28 @@
 
 #include <JuceHeader.h>
 
+#define LOW_CUT_FREQ_PARAM_NAME   "LowCut Freq"
+#define HIGH_CUT_FREQ_PARAM_NAME  "HighCut Freq"
+#define PEAK_FREQ_PARAM_NAME      "Peak Freq"
+#define PEAK_GAIN_PARAM_NAME      "Peak Gain"
+#define PEAK_QUALITY_PARAM_NAME   "Peak Quality"
+#define LOW_CUT_SLOPE_PARAM_NAME  "LowCut Slope"
+#define HIGH_CUT_SLOPE_PARAM_NAME "HighCut Slope"
+
+enum Slope
+{
+    Slope_12,
+    Slope_24,
+    Slope_36,
+    Slope_48
+};
+
 struct ChainSettings
 {
-    float peakFreq{ 0 }, peakGainInDecibels{ 0 }, peakQuality{ 1.f };
-    float lowCutFreq{ 0 }, highCutFreq{ 0 };
-    float lowCutSlope{ 0 }, highCutSlope{ 0 };
+    float peakFreq { 0 }, peakGainInDecibels { 0 }, peakQuality { 1.f };
+    float lowCutFreq { 0 }, highCutFreq { 0 };
+
+    Slope lowCutSlope { Slope::Slope_12 }, highCutSlope { Slope::Slope_12 };
 };
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);

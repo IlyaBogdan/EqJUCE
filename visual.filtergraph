@@ -16,11 +16,11 @@
       </OUTPUTS>
     </LAYOUT>
   </FILTER>
-  <FILTER uid="5" x="0.495" y="0.6008064516129032" useARA="0" uiLastX_Normal="530"
-          uiLastY_Normal="351" uiopen_Normal="0">
+  <FILTER uid="5" x="0.495" y="0.6008064516129032" useARA="0" uiLastX_Normal="899"
+          uiLastY_Normal="360" uiopen_Normal="0">
     <PLUGIN name="SimpleEQ" format="VST3" category="Fx|EQ" manufacturer="yourcompany"
             version="1.0.0" file="D:\programming\juice_tutorial\SimpleEQ\Builds\VisualStudio2022\x64\Debug\VST3\SimpleEQ.vst3\Contents\x86_64-win\SimpleEQ.vst3"
-            uniqueId="fea9da1b" isInstrument="0" fileTime="196d43b87fd" infoUpdateTime="196d4526064"
+            uniqueId="fea9da1b" isInstrument="0" fileTime="196d7b167d5" infoUpdateTime="196d7b242c9"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="e9590f47"/>
     <STATE>191.VMjLgXK....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLt3hKt3hKt3hKt3hYRUUSTEETIckVwTjQisVTTgkdEYjKAQjYPQSPWgUdMcjKAQjct3hdA4hKt3hKt3hKtnTUv.UQAslXuk0UXoWUFE0YQcEV77RRC8Vav8lak4Fc9vyKVMEUy.Ea0cVZtMEcgQWY9..</STATE>
@@ -48,8 +48,26 @@
       </OUTPUTS>
     </LAYOUT>
   </FILTER>
+  <FILTER uid="11" x="0.19" y="0.2750533049040512" useARA="0" uiLastX_Normal="452"
+          uiLastY_Normal="320" uiopen_Normal="0">
+    <PLUGIN name="AudioPluginDemo" format="Internal" category="Effect" manufacturer="JUCE"
+            version="1.0.0" file="AudioPluginDemo" uniqueId="4d00ec0c" isInstrument="0"
+            fileTime="0" infoUpdateTime="0" numInputs="2" numOutputs="2"
+            isShell="0" hasARAExtension="0" uid="4d00ec0c"/>
+    <STATE>159.VMjLgXI....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOyQWXzUlO7.UPRETSfjFY8HBYkwVX4IBH1EFa0UVOh.iKvHxK9vCTAIUPMARZj0iHmEVZtIBH1EFa0UVOhDiKvHxK9vScoMEcgQWYfbWZjQGZ8HBMv.iHffVYocFZz0iHx.CLh7hO77xbzEFck4C.</STATE>
+    <LAYOUT>
+      <INPUTS>
+        <BUS index="0" layout="L R"/>
+      </INPUTS>
+      <OUTPUTS>
+        <BUS index="0" layout="L R"/>
+      </OUTPUTS>
+    </LAYOUT>
+  </FILTER>
   <CONNECTION srcFilter="5" srcChannel="0" dstFilter="3" dstChannel="0"/>
   <CONNECTION srcFilter="5" srcChannel="1" dstFilter="3" dstChannel="1"/>
   <CONNECTION srcFilter="9" srcChannel="0" dstFilter="5" dstChannel="0"/>
   <CONNECTION srcFilter="9" srcChannel="1" dstFilter="5" dstChannel="1"/>
+  <CONNECTION srcFilter="11" srcChannel="0" dstFilter="5" dstChannel="0"/>
+  <CONNECTION srcFilter="11" srcChannel="1" dstFilter="5" dstChannel="1"/>
 </FILTERGRAPH>
