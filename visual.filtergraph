@@ -20,7 +20,7 @@
           uiLastY_Normal="360" uiopen_Normal="0">
     <PLUGIN name="SimpleEQ" format="VST3" category="Fx|EQ" manufacturer="yourcompany"
             version="1.0.0" file="D:\programming\juice_tutorial\SimpleEQ\Builds\VisualStudio2022\x64\Debug\VST3\SimpleEQ.vst3\Contents\x86_64-win\SimpleEQ.vst3"
-            uniqueId="fea9da1b" isInstrument="0" fileTime="196d7b167d5" infoUpdateTime="196d7b242c9"
+            uniqueId="fea9da1b" isInstrument="0" fileTime="196d812058d" infoUpdateTime="196d81b0778"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="e9590f47"/>
     <STATE>191.VMjLgXK....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLt3hKt3hKt3hKt3hYRUUSTEETIckVwTjQisVTTgkdEYjKAQjYPQSPWgUdMcjKAQjct3hdA4hKt3hKt3hKtnTUv.UQAslXuk0UXoWUFE0YQcEV77RRC8Vav8lak4Fc9vyKVMEUy.Ea0cVZtMEcgQWY9..</STATE>
@@ -54,7 +54,7 @@
             version="1.0.0" file="AudioPluginDemo" uniqueId="4d00ec0c" isInstrument="0"
             fileTime="0" infoUpdateTime="0" numInputs="2" numOutputs="2"
             isShell="0" hasARAExtension="0" uid="4d00ec0c"/>
-    <STATE>159.VMjLgXI....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOyQWXzUlO7.UPRETSfjFY8HBYkwVX4IBH1EFa0UVOh.iKvHxK9vCTAIUPMARZj0iHmEVZtIBH1EFa0UVOhDiKvHxK9vScoMEcgQWYfbWZjQGZ8HBMv.iHffVYocFZz0iHx.CLh7hO77xbzEFck4C.</STATE>
+    <STATE>159.VMjLgXI....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOyQWXzUlO7.UPRETSfjFY8HBYkwVX4IBH1EFa0UVOhDiKvHxK9vCTAIUPMARZj0iHmEVZtIBH1EFa0UVOhDiKvHxK9vScoMEcgQWYfbWZjQGZ8HBMv.iHffVYocFZz0iHx.CLh7hO77xbzEFck4C.</STATE>
     <LAYOUT>
       <INPUTS>
         <BUS index="0" layout="L R"/>
