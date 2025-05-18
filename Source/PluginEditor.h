@@ -3,6 +3,11 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
+#define SLIDER_FILL_COLOR juce::Colour(97u, 18u, 167u)
+#define SLIDER_BORDER_COLOR juce::Colour(255u, 154u, 1u)
+#define SLIDER_FONT_COLOR juce::Colours::white
+
+
 struct LookAndFeel : juce::LookAndFeel_V4
 {
     void drawRotarySlider(
@@ -30,7 +35,7 @@ struct RotarySliderWithLabels : juce::Slider
 
     void paint(juce::Graphics& g) override;
     juce::Rectangle<int> getSliderBounds() const;
-    int getTextHeight() const { return 24; }
+    int getTextHeight() const { return 12; }
     juce::String getDisplayString() const;
 
     private:

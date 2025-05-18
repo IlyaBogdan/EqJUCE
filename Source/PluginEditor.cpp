@@ -13,10 +13,10 @@ void LookAndFeel::drawRotarySlider(
 
     auto bounds = Rectangle<float>(x, y, width, height);
     
-    g.setColour(Colour(97u, 18u, 167u));
+    g.setColour(SLIDER_FILL_COLOR);
     g.fillEllipse(bounds);
 
-    g.setColour(Colour(255u, 154u, 1u));
+    g.setColour(SLIDER_BORDER_COLOR);
     g.drawEllipse(bounds, 1.f);
 
     if (auto* rswl = dynamic_cast<RotarySliderWithLabels*>(&slider)) {
@@ -46,17 +46,47 @@ void LookAndFeel::drawRotarySlider(
         r.setSize(strWidth + 4, rswl->getTextHeight() + 2);
         r.setCentre(bounds.getCentre());
 
-        g.setColour(Colours::black);
+        g.setColour(SLIDER_FILL_COLOR);
         g.fillRect(r);
 
-        g.setColour(Colours::white);
+        g.setColour(SLIDER_FONT_COLOR);
         g.drawFittedText(text, r.toNearestInt(), juce::Justification::centred, 1);
     }
 }
 
 juce::String RotarySliderWithLabels::getDisplayString() const
 {
-    return juce::String(getValue());
+    if (auto* choiceParam = dynamic_cast<juce::AudioParameterChoice*>(param)) {
+        return choiceParam->getCurrentChoiceName();
+    }
+
+    juce::String str;
+    bool addK = false;
+
+    if (auto* floatParam = dynamic_cast<juce::AudioParameterFloat*>(param)) {
+        float val = getValue();
+
+        if (val > 999.f) {
+            val /= 1000.f;
+            addK = true;
+        }
+
+        str = juce::String(val, addK ? 2 : 0);
+    }
+    else {
+        jassertfalse;
+    }
+
+    if (suffix.isNotEmpty()) {
+        str << " ";
+        if (addK) {
+            str << "k";
+        }
+
+        str << suffix;
+    }
+
+    return str;
 }
 
 void RotarySliderWithLabels::paint(juce::Graphics& g)
@@ -69,10 +99,10 @@ void RotarySliderWithLabels::paint(juce::Graphics& g)
     auto range = getRange();
     auto sliderBounds = getSliderBounds();
 
-    g.setColour(Colours::red);
-    g.drawRect(getLocalBounds());
-    g.setColour(Colours::yellow);
-    g.drawRect(sliderBounds);
+    // g.setColour(Colours::red);
+    // g.drawRect(getLocalBounds());
+    // g.setColour(Colours::yellow);
+    // g.drawRect(sliderBounds);
 
     getLookAndFeel().drawRotarySlider(
         g,
