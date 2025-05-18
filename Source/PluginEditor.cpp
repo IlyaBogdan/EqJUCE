@@ -1,32 +1,17 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-
-SimpleEQAudioProcessorEditor::SimpleEQAudioProcessorEditor (SimpleEQAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p),
-    peakFreqSliderAttachment(audioProcessor.apvts, PEAK_FREQ_PARAM_NAME, peakFreqSlider),
-    peakGainSliderAttachment(audioProcessor.apvts, PEAK_GAIN_PARAM_NAME, peakGainSlider),
-    peakQualitySliderAttachment(audioProcessor.apvts, PEAK_QUALITY_PARAM_NAME, peakQualitySlider),
-    lowCutFreqSliderAttachment(audioProcessor.apvts, LOW_CUT_FREQ_PARAM_NAME, lowCutFreqSlider),
-    highCutFreqSliderAttachment(audioProcessor.apvts, HIGH_CUT_FREQ_PARAM_NAME, highCutFreqSlider),
-    lowCutSlopeSliderAttachment(audioProcessor.apvts, LOW_CUT_SLOPE_PARAM_NAME, lowCutSlopeSlider),
-    highCutSlopeSliderAttachment(audioProcessor.apvts, HIGH_CUT_SLOPE_PARAM_NAME, highCutSlopeSlider)
+ResponseCurveComponent::ResponseCurveComponent(SimpleEQAudioProcessor& p) : audioProcessor(p)
 {
-    for (auto *comp : getComps()) {
-        addAndMakeVisible(comp);
-    }
-
     const auto& params = audioProcessor.getParameters();
     for (auto param : params) {
         param->addListener(this);
     }
 
     startTimer(60);
-
-    setSize (600, 400);
 }
 
-SimpleEQAudioProcessorEditor::~SimpleEQAudioProcessorEditor()
+ResponseCurveComponent::~ResponseCurveComponent()
 {
     const auto& params = audioProcessor.getParameters();
     for (auto param : params) {
@@ -34,14 +19,35 @@ SimpleEQAudioProcessorEditor::~SimpleEQAudioProcessorEditor()
     }
 }
 
-void SimpleEQAudioProcessorEditor::paint (juce::Graphics& g)
+void ResponseCurveComponent::parameterValueChanged(int parameterIndex, float newValue)
+{
+    parametersChanged.set(true);
+}
+
+void ResponseCurveComponent::timerCallback()
+{
+    if (parametersChanged.compareAndSetBool(false, true)) {
+        auto chainSettings = getChainSettings(audioProcessor.apvts);
+        auto peakCoeffitients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
+        updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoeffitients);
+
+        auto lowCutCoeffitients = makeLowCutFilter(chainSettings, audioProcessor.getSampleRate());
+        auto highCutCoeffitients = makeHighCutFilter(chainSettings, audioProcessor.getSampleRate());
+
+        updateCutFilter(monoChain.get<ChainPositions::LowCut>(), lowCutCoeffitients, chainSettings.lowCutSlope);
+        updateCutFilter(monoChain.get<ChainPositions::HighCut>(), highCutCoeffitients, chainSettings.highCutSlope);
+
+        repaint();
+    }
+}
+
+void ResponseCurveComponent::paint(juce::Graphics& g)
 {
     using namespace juce;
 
     g.fillAll(Colours::black);
 
-    auto bounds = getLocalBounds();
-    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
+    auto responseArea = getLocalBounds();
 
     auto w = responseArea.getWidth();
 
@@ -98,9 +104,9 @@ void SimpleEQAudioProcessorEditor::paint (juce::Graphics& g)
     const double outputMax = responseArea.getY();
 
     auto map = [outputMin, outputMax](double input)
-    {
-        return jmap(input, -24.0, 24.0, outputMin, outputMax);
-    };
+        {
+            return jmap(input, -24.0, 24.0, outputMin, outputMax);
+        };
 
     responseCurve.startNewSubPath(responseArea.getX(), map(mags.front()));
 
@@ -115,10 +121,34 @@ void SimpleEQAudioProcessorEditor::paint (juce::Graphics& g)
     g.strokePath(responseCurve, PathStrokeType(2));
 }
 
+SimpleEQAudioProcessorEditor::SimpleEQAudioProcessorEditor(SimpleEQAudioProcessor& p) : AudioProcessorEditor(&p),
+    responseCurveComponent(p),
+    peakFreqSliderAttachment(p.apvts, PEAK_FREQ_PARAM_NAME, peakFreqSlider),
+    peakGainSliderAttachment(p.apvts, PEAK_GAIN_PARAM_NAME, peakGainSlider),
+    peakQualitySliderAttachment(p.apvts, PEAK_QUALITY_PARAM_NAME, peakQualitySlider),
+    lowCutFreqSliderAttachment(p.apvts, LOW_CUT_FREQ_PARAM_NAME, lowCutFreqSlider),
+    highCutFreqSliderAttachment(p.apvts, HIGH_CUT_FREQ_PARAM_NAME, highCutFreqSlider),
+    lowCutSlopeSliderAttachment(p.apvts, LOW_CUT_SLOPE_PARAM_NAME, lowCutSlopeSlider),
+    highCutSlopeSliderAttachment(p.apvts, HIGH_CUT_SLOPE_PARAM_NAME, highCutSlopeSlider)
+{
+    for (auto *comp : getComps()) {
+        addAndMakeVisible(comp);
+    }
+
+    setSize (600, 400);
+}
+
+SimpleEQAudioProcessorEditor::~SimpleEQAudioProcessorEditor()
+{
+    
+}
+
 void SimpleEQAudioProcessorEditor::resized()
 {
     auto bounds = getLocalBounds();
     auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
+
+    responseCurveComponent.setBounds(responseArea);
 
     auto lowCutArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
     auto highCutArea = bounds.removeFromRight(bounds.getWidth() * 0.5);
@@ -133,28 +163,6 @@ void SimpleEQAudioProcessorEditor::resized()
     peakQualitySlider.setBounds(bounds);
 }
 
-void SimpleEQAudioProcessorEditor::parameterValueChanged(int parameterIndex, float newValue)
-{
-    parametersChanged.set(true);
-}
-
-void SimpleEQAudioProcessorEditor::timerCallback()
-{
-    if (parametersChanged.compareAndSetBool(false, true)) {
-        auto chainSettings = getChainSettings(audioProcessor.apvts);
-        auto peakCoeffitients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
-        updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoeffitients);
-
-        auto lowCutCoeffitients = makeLowCutFilter(chainSettings, audioProcessor.getSampleRate());
-        auto highCutCoeffitients = makeHighCutFilter(chainSettings, audioProcessor.getSampleRate());
-
-        updateCutFilter(monoChain.get<ChainPositions::LowCut>(), lowCutCoeffitients, chainSettings.lowCutSlope);
-        updateCutFilter(monoChain.get<ChainPositions::HighCut>(), highCutCoeffitients, chainSettings.highCutSlope);
-
-        repaint();
-    }
-}
-
 std::vector<juce::Component*> SimpleEQAudioProcessorEditor::getComps()
 {
     return
@@ -165,6 +173,7 @@ std::vector<juce::Component*> SimpleEQAudioProcessorEditor::getComps()
         &lowCutFreqSlider,
         &highCutFreqSlider,
         &lowCutSlopeSlider,
-        &highCutSlopeSlider
+        &highCutSlopeSlider,
+        &responseCurveComponent
     };
 }
