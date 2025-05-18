@@ -11,31 +11,38 @@ struct CustomRotarySlider : juce::Slider
     }
 };
 
-class SimpleEQAudioProcessorEditor  : public juce::AudioProcessorEditor
+class SimpleEQAudioProcessorEditor : public juce::AudioProcessorEditor, juce::AudioProcessorParameter::Listener, juce::Timer
 {
-public:
-    SimpleEQAudioProcessorEditor (SimpleEQAudioProcessor&);
-    ~SimpleEQAudioProcessorEditor() override;
+    public:
+        SimpleEQAudioProcessorEditor(SimpleEQAudioProcessor&);
+        ~SimpleEQAudioProcessorEditor() override;
 
-    //==============================================================================
-    void paint (juce::Graphics&) override;
-    void resized() override;
+        void paint(juce::Graphics&) override;
+        void resized() override;
 
-private:
-    SimpleEQAudioProcessor& audioProcessor;
+        void parameterValueChanged(int parameterIndex, float newValue) override;
+        void parameterGestureChanged(int parameterIndex, bool gestureIsStarting) override {};
+        void timerCallback() override;
 
-    CustomRotarySlider peakFreqSlider, peakGainSlider, peakQualitySlider;
-    CustomRotarySlider lowCutFreqSlider, highCutFreqSlider;
-    CustomRotarySlider lowCutSlopeSlider, highCutSlopeSlider;
+    private:
+        SimpleEQAudioProcessor& audioProcessor;
 
-    using APVTS = juce::AudioProcessorValueTreeState;
-    using Attachment = APVTS::SliderAttachment;
+        juce::Atomic<bool> parametersChanged { false };
 
-    Attachment peakFreqSliderAttachment, peakGainSliderAttachment, peakQualitySliderAttachment;
-    Attachment lowCutFreqSliderAttachment, highCutFreqSliderAttachment;
-    Attachment lowCutSlopeSliderAttachment, highCutSlopeSliderAttachment;
+        CustomRotarySlider peakFreqSlider, peakGainSlider, peakQualitySlider;
+        CustomRotarySlider lowCutFreqSlider, highCutFreqSlider;
+        CustomRotarySlider lowCutSlopeSlider, highCutSlopeSlider;
 
-    std::vector<juce::Component*> getComps();
+        using APVTS = juce::AudioProcessorValueTreeState;
+        using Attachment = APVTS::SliderAttachment;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessorEditor)
+        Attachment peakFreqSliderAttachment, peakGainSliderAttachment, peakQualitySliderAttachment;
+        Attachment lowCutFreqSliderAttachment, highCutFreqSliderAttachment;
+        Attachment lowCutSlopeSliderAttachment, highCutSlopeSliderAttachment;
+
+        std::vector<juce::Component*> getComps();
+
+        MonoChain monoChain;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessorEditor)
 };
