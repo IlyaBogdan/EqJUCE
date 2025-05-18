@@ -55,19 +55,22 @@ struct RotarySliderWithLabels : juce::Slider
 
 struct ResponseCurveComponent : juce::Component, juce::AudioProcessorParameter::Listener, juce::Timer {
 
-    ResponseCurveComponent(SimpleEQAudioProcessor&);
-    ~ResponseCurveComponent();
+    public:
+        ResponseCurveComponent(SimpleEQAudioProcessor&);
+        ~ResponseCurveComponent();
 
-    void parameterValueChanged(int parameterIndex, float newValue) override;
-    void parameterGestureChanged(int parameterIndex, bool gestureIsStarting) override {};
-    void timerCallback() override;
+        void parameterValueChanged(int parameterIndex, float newValue) override;
+        void parameterGestureChanged(int parameterIndex, bool gestureIsStarting) override {};
+        void timerCallback() override;
 
-    void paint(juce::Graphics& g) override;
+        void paint(juce::Graphics& g) override;
 
     private:
         SimpleEQAudioProcessor& audioProcessor;
         juce::Atomic<bool> parametersChanged{ false };
         MonoChain monoChain;
+
+        void updateChain();
 };
 
 class SimpleEQAudioProcessorEditor : public juce::AudioProcessorEditor
