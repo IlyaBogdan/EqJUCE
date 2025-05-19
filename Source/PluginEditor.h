@@ -53,8 +53,8 @@ struct RotarySliderWithLabels : juce::Slider
         juce::String suffix;
 };
 
-struct ResponseCurveComponent : juce::Component, juce::AudioProcessorParameter::Listener, juce::Timer {
-
+struct ResponseCurveComponent : juce::Component, juce::AudioProcessorParameter::Listener, juce::Timer
+{
     public:
         ResponseCurveComponent(SimpleEQAudioProcessor&);
         ~ResponseCurveComponent();
@@ -64,6 +64,7 @@ struct ResponseCurveComponent : juce::Component, juce::AudioProcessorParameter::
         void timerCallback() override;
 
         void paint(juce::Graphics& g) override;
+        void resized() override;
 
     private:
         SimpleEQAudioProcessor& audioProcessor;
@@ -71,6 +72,10 @@ struct ResponseCurveComponent : juce::Component, juce::AudioProcessorParameter::
         MonoChain monoChain;
 
         void updateChain();
+        juce::Image background;
+
+        juce::Rectangle<int> getRenderArea();
+        juce::Rectangle<int> getAnalisysArea();
 };
 
 class SimpleEQAudioProcessorEditor : public juce::AudioProcessorEditor
