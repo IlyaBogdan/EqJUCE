@@ -323,7 +323,39 @@ void ResponseCurveComponent::resized()
         g.drawHorizontalLine(y, left, right);
     }
 
-    g.drawRect(getAnalisysArea());
+    // g.drawRect(getAnalisysArea());
+
+    g.setColour(Colours::lightgrey);
+    const int fontHeight = 10;
+    g.setFont(fontHeight);
+
+    for (int i = 0; i < freqs.size(); ++i)
+    {
+        auto f = freqs[i];
+        if (f == 30 || f == 40 || f == 300 || f == 400 || f == 3000 || f == 4000) continue;
+
+        auto x = xs[i];
+
+        bool addK = false;
+        String str;
+        if (f > 999.f) {
+            addK = true;
+            f /= 1000.f;
+        }
+
+        str << f;
+        if (addK) str << "k";
+        str << "Hz";
+
+        auto textWidth = g.getCurrentFont().getStringWidth(str);
+
+        Rectangle<int> r;
+        r.setSize(textWidth, fontHeight);
+        r.setCentre(x, 0);
+        r.setY(1);
+
+        g.drawFittedText(str, r, juce::Justification::centred, 1);
+    }
 }
 
 juce::Rectangle<int> ResponseCurveComponent::getRenderArea()
